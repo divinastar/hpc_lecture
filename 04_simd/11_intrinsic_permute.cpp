@@ -3,7 +3,7 @@
 
 int main() {
   const int N = 8;
-  int idx[N] = {3,7,0,6,2,5,1,4};
+  int idx[N] = {1,2,3,4,5,6,7,0};
   float a[N], b[N];
   for(int i=0; i<N; i++)
     a[idx[i]] = i * 0.1;
