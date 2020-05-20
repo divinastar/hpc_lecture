@@ -50,10 +50,10 @@ int main() {
 	fxvec = _mm256_sub_ps(fxvec,fxd);
         fyvec = _mm256_sub_ps(fyvec,fyd);
   }
-
+//Store the result
   _mm256_store_ps(fx, fxvec);
   _mm256_store_ps(fy, fyvec);
-  
+
   for(int i=0; i<N; i++){
     printf("%d %g %g\n",i,fx[i],fy[i]);
   }
