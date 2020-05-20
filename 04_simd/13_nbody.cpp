@@ -20,6 +20,7 @@ int main() {
   __m256 fyvec = _mm256_setzero_ps();
   __m256 xtemp = _mm256_load_ps(x);
   __m256 ytemp = _mm256_load_ps(y);
+  __m256 mtemp = _mm256_load_ps(m);
   
 //Permute constant
   int idx[N] = {1,2,3,4,5,6,7,0};
@@ -29,7 +30,8 @@ int main() {
   for(int i=0; i<N-1; i++) {
 //Shifting xtemp and ytemp
       xtemp = _mm256_permutevar8x32_ps(xtemp,ivec);
-      ytemp = _mm256_permutevar8x32_ps(ytemp,ivec);    
+      ytemp = _mm256_permutevar8x32_ps(ytemp,ivec);
+      mtemp = _mm256_permutevar8x32_ps(mtemp,ivec);
 
 //Calculate rx, ry by subtracting xvec with xtemp
       __m256 rx = _mm256_sub_ps(xvec,xtemp);
@@ -41,8 +43,8 @@ int main() {
       __m256 rx2_ry2 = _mm256_add_ps(rx2,ry2);
 //      __m256 r = _mm256_sqrt_ps(rx2_ry2);
       __m256 rsqrt = _mm256_rsqrt_ps(rx2_ry2);
-      __m256 fxd = _mm256_mul_ps(rsqrt,_mm256_mul_ps(rsqrt, _mm256_mul_ps(rsqrt, _mm256_mul_ps(mvec,rx))));
-      __m256 fyd = _mm256_mul_ps(rsqrt,_mm256_mul_ps(rsqrt, _mm256_mul_ps(rsqrt, _mm256_mul_ps(mvec,ry))));
+      __m256 fxd = _mm256_mul_ps(rsqrt,_mm256_mul_ps(rsqrt, _mm256_mul_ps(rsqrt, _mm256_mul_ps(mtemp,rx))));
+      __m256 fyd = _mm256_mul_ps(rsqrt,_mm256_mul_ps(rsqrt, _mm256_mul_ps(rsqrt, _mm256_mul_ps(mtemp,ry))));
 //      __m256 fxd = _mm256_div_ps(_mm256_div_ps(_mm256_div_ps(_mm256_mul_ps(rx,mvec),r),r),r);
 //      __m256 fyd = _mm256_div_ps(_mm256_div_ps(_mm256_div_ps(_mm256_mul_ps(ry,mvec),r),r),r);
 	fxvec = _mm256_sub_ps(fxvec,fxd);
