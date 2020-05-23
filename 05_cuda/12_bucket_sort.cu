@@ -2,23 +2,29 @@
 #include <cstdlib>
 #include <vector>
 
-__global__ void bucketsort(std::vector<int> key, int range, int n){
-  std::vector<int> bucket(range);
-  for(int i=0; i<range; i++){
-    bucket[i] = 0;
-  }
-  for(int i=0; i<n; i++){
-    bucket[key[i]]++;
-  } 
+
+__global__ void bucketsort(int *key, int *bucket, int n){
   
-  //int j = blockIdx.x * blockDim.x + threadIdx.x;
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if(i>=n) return;
+
+  int a = key[i];
+  atomicAdd(&bucket[a],1);
+  __syncthreads();
+  
+  for(int j = 0, k = 0; j <= i; k++){
+     key[i] = k;
+     j += bucket[k];
+  }
 }
 
 
 int main() {
   int n = 50;
   int range = 5;
-  std::vector<int> key(n);
+  int *key;
+  cudaMallocManaged(&key, n*sizeof(int));
+
   for (int i=0; i<n; i++) {
     key[i] = rand() % range;
     printf("%d ",key[i]);
@@ -26,28 +32,25 @@ int main() {
   printf("\n");
   
   const int X = 32;
+  int *bucket;
 
-//  std::vector<int> bucket(range); 
-//  for (int i=0; i<range; i++) {
-//    bucket[i] = 0;
-//  }
+  cudaMallocManaged(&bucket, range*sizeof(int));  
   
-//  for (int i=0; i<n; i++) {
-//    bucket[key[i]]++;
-//  }
- 
-//  for (int i=0, j=0; i<range; i++) {
-//    for (; bucket[i]>0; bucket[i]--) {
-//     key[j++] = i;
-//    }
-//  }
-
-  bucketsort<<<((n+X-1)/X,X)>>>(key,range,n);
+  bucketsort<<<(n+X-1)/X,X,range>>>(key,bucket,n);
   cudaDeviceSynchronize();
   
   for (int i=0; i<n; i++) {
-    printf("%d ",key[i]);
+    printf("%d ", key[i]);
   }
   printf("\n");
+
+//  for (int i=0; i<range; i++){
+//    printf("%d ", bucket[i]);
+//  }
+//  printf("\n");
   
+  cudaFree(key);
+  cudaFree(bucket);
 }
+
+
