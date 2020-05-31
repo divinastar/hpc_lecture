@@ -61,6 +61,9 @@ int main(int argc, const char **argv) {
   int64_t num_flops = (2 * int64_t(m) * int64_t(n) * int64_t(k)) + (2 * int64_t(m) * int64_t(n));
   double tcublas = timer.elapsed_millis() / g_timing_iterations;
   double cublas_flops = double(num_flops) / tcublas / 1.0e6;
+  //end of cublas
+  
+  
   typedef gemm::blas_scaled_epilogue<float, float, float> epilogue_op_t;
   epilogue_op_t epilogue(alpha, beta);
   for (int i = 0; i < g_timing_iterations+2; i++) {
@@ -80,6 +83,8 @@ int main(int argc, const char **argv) {
   timer.stop();
   double tcutlass = timer.elapsed_millis() / g_timing_iterations;
   double cutlass_flops = double(num_flops) / tcutlass / 1.0e6;
+  //end of cutlass
+  
   printf("CUBLAS: %.2f Gflops, CUTLASS: %.2f Gflops\n", cublas_flops, cutlass_flops);
   C.sync_host();
   C2.sync_host();
