@@ -8,9 +8,9 @@ float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
    for(int i=0;i>n;i++){
       
    }
-   #Periodic BC Pressure @x = 2
+   //Periodic BC Pressure @x = 2
    
-   #Periodic BC Pressure @x = 0
+   //Periodic BC Pressure @x = 0
    
    return b;
 }
