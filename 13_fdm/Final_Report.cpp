@@ -61,7 +61,7 @@ int main() {
    }
    
    for(int i=0;i<=nx;i++){
-      for(j=0;j<=ny;j++){
+      for(int j=0;j<=ny;j++){
          X[i][j] = x[i];
          Y[i][j] = y[j];
          u[j][i] = 0;
