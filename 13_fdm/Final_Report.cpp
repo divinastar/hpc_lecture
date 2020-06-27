@@ -5,7 +5,7 @@
 
 float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
    float b[][];
-   for(i=0;i>n;i++){
+   for(int i=0;i>n;i++){
       
    }
    #Periodic BC Pressure @x = 2
@@ -16,7 +16,7 @@ float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
 }
 
 float pressure_poisson_periodic(float p, float nx, float ny, int nit){
-   for(q=0; q<nit; q++){
+   for(int q=0; q<nit; q++){
    }  
    return p;
 }
@@ -30,10 +30,10 @@ int main() {
    int c = 1;
    float dx = 2/(nx - 1);
    float dy = 2/(ny - 1);
-   float x[];
-   float y[];
-   float X[][];
-   float Y[][];
+   float x[nx+1];
+   float y[ny+1];
+   float X[nx+1][ny+1];
+   float Y[nx+1][ny+1];
    
 
    //Physical Variables
@@ -52,15 +52,15 @@ int main() {
    float b[ny][nx];
    
    
-   for(i=0;i<=nx;i++){
+   for(int i=0;i<=nx;i++){
       x[i] =  (2-0)*i/nx;
    }
    
-   for(i=0;i<=ny;i++){
+   for(int i=0;i<=ny;i++){
       y[i] =  (2-0)*i/nx;
    }
    
-   for(i=0;i<=nx;i++){
+   for(int i=0;i<=nx;i++){
       for(j=0;j<=ny;j++){
          X[i][j] = x[i];
          Y[i][j] = y[j];
