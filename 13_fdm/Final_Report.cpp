@@ -1,6 +1,6 @@
-#include <cstdio.h>
-#include <iostream.h>
-#include <cmath.h>
+#include <cstdio>
+#include <iostream>
+#include <cmath>
 
 const int nx = 41;
 const int ny = 41;
