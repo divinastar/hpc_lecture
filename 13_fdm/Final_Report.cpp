@@ -83,8 +83,8 @@ int main() {
       un = u;
       vn = v;
       
-      b = build_up_b(rho, dt, dx, dy, u, v);
-      p = pressure_poisson_periodic(p, dx, dy);
+      //b = build_up_b(rho, dt, dx, dy, u, v);
+      //p = pressure_poisson_periodic(p, dx, dy);
       
       
       sumu = 0;
