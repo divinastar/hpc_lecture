@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <iostream>
+#include <cmath>
 
 const int nx = 41;
 const int ny = 41;
@@ -6,7 +8,7 @@ const int nt = 10;
 const int nit = 50;
 const int c = 1;
 
-float build_up_b(int rho, float dt, float dx, float dy, float u[][], float v[][]){
+float build_up_b(int rho, float dt, float dx, float dy, float[][] u, float[][] v){
    float b[ny][nx];
    for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
@@ -18,10 +20,10 @@ float build_up_b(int rho, float dt, float dx, float dy, float u[][], float v[][]
       for(int j=1;j<ny-1;j++){
          b[j][i] = (rho*(1/dt* ((u[j][i+1] - u[j][i-1])/(2*dx)) 
                               + (v[j+1][i] - v[j-1][i])/(2*dy))
-                              -((u[j][i+1] - u[j][i-1])/(2*dx))**2
+                              - pow((u[j][i+1] - u[j][i-1])/(2*dx),2)
                               - 2*((u[j+1][i] - u[j-1][i]/(2*dy) *
                                     (v[j][i+1]-v[j][i-1]/(2*dx)) -
-                                    ((v[j+1][i] - v[j-1][i])/(2*dy)**2));
+                                    pow((v[j+1][i] - v[j-1][i])/(2*dy),2));
       
       }
    }
@@ -29,10 +31,10 @@ float build_up_b(int rho, float dt, float dx, float dy, float u[][], float v[][]
    for(int j=1;j<ny;i++){
       b[j][nx-1] = (rho*(1/dt*((u[j][0] - u[j][nx-2])/(2*dx)
                               +(v[j+1][nx-1] - v[j-1][nx-1]/(2*dy))
-                              -((u[j][0] - u[j][nx-2]/(2*dx))**2
+                              -pow((u[j][0] - u[j][nx-2])/(2*dx),2)
                                - 2*((u[j+1][nx-1]-u[j-1][nx-1])/(2*dy) *
                                     (v[j][0] - v[j][nx-2]/(2*dx)) -
-                                    ((v[j+1][nx-1] - v[j-1][nx-1])/(2*dy))**2))
+                                    pow((v[j+1][nx-1] - v[j-1][nx-1])/(2*dy),2))
    }
                                    
                                    
@@ -40,10 +42,10 @@ float build_up_b(int rho, float dt, float dx, float dy, float u[][], float v[][]
     for(int j=1;j<ny;i++){
       b[j][0] = (rho*(1/dt*((u[j][1] - u[j][nx-1])/(2*dx)
                               +(v[j+1][0] - v[j-1][0]/(2*dy))
-                              -((u[j][1] - u[j][nx-1]/(2*dx))**2
+                              - pow((u[j][1] - u[j][nx-1])/(2*dx),2)
                                - 2*((u[j+1][0]-u[j-1][0])/(2*dy) *
                                     (v[j][1] - v[j][nx-1]/(2*dx)) -
-                                    ((v[j+1][0] - v[j-1][0])/(2*dy))**2))
+                                    pow((v[j+1][0] - v[j-1][0])/(2*dy),2))
    }                                  
    return b;
 }
