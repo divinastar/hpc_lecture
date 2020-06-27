@@ -73,10 +73,10 @@ int main() {
    //Variable Declarations
    float dx = 2/(nx - 1);
    float dy = 2/(ny - 1);
-   float** x[nx+1];
-   float** y[ny+1];
-   float** X[nx+1][ny+1];
-   float** Y[nx+1][ny+1];
+   float x[nx+1];
+   float y[ny+1];
+   float X[nx+1][ny+1];
+   float Y[nx+1][ny+1];
    
    //Physical Variables
    const int rho = 1;
@@ -85,13 +85,13 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   float** u[ny][nx];
-   float** un[ny][nx];
-   float** v[ny][nx];
-   float** vn[ny][nx];
-   float** p[ny][nx];
-   float** pn[ny][nx];
-   float** b[ny][nx];
+   float u[ny][nx];
+   float un[ny][nx];
+   float v[ny][nx];
+   float vn[ny][nx];
+   float p[ny][nx];
+   float pn[ny][nx];
+   float b[ny][nx];
    
    
    for(int i=0;i<=nx;i++){
