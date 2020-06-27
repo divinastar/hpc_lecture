@@ -62,8 +62,12 @@ int main() {
    float sumun = 0;
    
    while(udiff>.001){
-      un = u;
-      vn = v;
+      for(int i=0; i<=nx; i++){
+         for(int j=0; j<=ny; j++){
+            un[j][i] = u[j][i];
+            vn[j][i] = v[j][i];
+         }    
+      }
       
       //b = build_up_b(rho, dt, dx, dy, u, v);
       //p = pressure_poisson_periodic(p, dx, dy);
