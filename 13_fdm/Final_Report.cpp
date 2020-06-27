@@ -86,23 +86,23 @@ int main() {
       
 }
 
-float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
-   float b[ny][nx];
-   for(int i=0;i>n;i++){
+//float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
+   //float b[ny][nx];
+   //for(int i=0;i>nx;i++){
       
-   }
+   //}
    //Periodic BC Pressure @x = 2
    
    //Periodic BC Pressure @x = 0
    
-   return b;
-}
+   //return b;
+//}
 
-float pressure_poisson_periodic(float p, float nx, float ny, int nit){
-   for(int q=0; q<nit; q++){
-   }  
-   return p;
-}
+//float pressure_poisson_periodic(float p, float nx, float ny, int nit){
+   //for(int q=0; q<nit; q++){
+   //}  
+   //return p;
+//}
 
 
 
