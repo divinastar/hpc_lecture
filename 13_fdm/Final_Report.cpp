@@ -1,5 +1,11 @@
 #include <cstdio>
 
+const int nx = 41;
+const int ny = 41;
+const int nt = 10;
+const int nit = 50;
+const int c = 1;
+
 float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
    float b[ny][nx];
    for(int i=0;i<nx;i++){
@@ -64,11 +70,6 @@ float pressure_poisson_periodic(float p, float dx, float dy){
 
 int main() {
    //Variable Declarations
-   const int nx = 41;
-   const int ny = 41;
-   const int nt = 10;
-   const int nit = 50;
-   const int c = 1;
    float dx = 2/(nx - 1);
    float dy = 2/(ny - 1);
    float x[nx+1];
