@@ -8,8 +8,8 @@ const int nt = 10;
 const int nit = 50;
 const int c = 1;
 
-float build_up_b(int rho, float dt, float dx, float dy, float **u, float **v){
-   float b[ny][nx];
+float** build_up_b(int rho, float dt, float dx, float dy, float **u, float **v){
+   float** b[ny][nx];
    for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
          b[j][i] = 0;
@@ -50,8 +50,8 @@ float build_up_b(int rho, float dt, float dx, float dy, float **u, float **v){
    return b;
 }
 
-float pressure_poisson_periodic(float **p, float dx, float dy){
-   float pn[ny][nx];
+float** pressure_poisson_periodic(float **p, float dx, float dy){
+   float** pn[ny][nx];
    
    for(int q=0; q<nit; q++){
       for(int i=0;i<=nx;i++){
@@ -73,10 +73,10 @@ int main() {
    //Variable Declarations
    float dx = 2/(nx - 1);
    float dy = 2/(ny - 1);
-   float x[nx+1];
-   float y[ny+1];
-   float X[nx+1][ny+1];
-   float Y[nx+1][ny+1];
+   float** x[nx+1];
+   float** y[ny+1];
+   float** X[nx+1][ny+1];
+   float** Y[nx+1][ny+1];
    
    //Physical Variables
    const int rho = 1;
@@ -85,13 +85,13 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   float u[ny][nx];
-   float un[ny][nx];
-   float v[ny][nx];
-   float vn[ny][nx];
-   float p[ny][nx];
-   float pn[ny][nx];
-   float b[ny][nx];
+   float** u[ny][nx];
+   float** un[ny][nx];
+   float** v[ny][nx];
+   float** vn[ny][nx];
+   float** p[ny][nx];
+   float** pn[ny][nx];
+   float** b[ny][nx];
    
    
    for(int i=0;i<=nx;i++){
