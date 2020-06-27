@@ -75,12 +75,13 @@ int main() {
       
       sumu = 0;
       sumun = 0;
-      for(int i=0;i<sizeof(u);i++){
-         sumu += u[i];
+      for(int i=0;i<=nx;i++){
+         for(int j=0; j<=ny;j++){
+            sumu += u[j][i];
+            sumun += un[j][i];
+         }
       }
-      for(int i=0;i<sizeof(un);i++){
-         sumun += un[i];
-      }
+
       
           
       udiff = (sumu - sumun)/ sumu ;
