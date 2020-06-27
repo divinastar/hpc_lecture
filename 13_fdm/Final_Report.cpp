@@ -22,7 +22,7 @@ float** build_up_b(int rho, float dt, float dx, float dy, float **u , float **v)
          b[j][i] = (rho*(1/dt* ((u[j][i+1] - u[j][i-1])/(2*dx) 
                               + (v[j+1][i] - v[j-1][i])/(2*dy))
                               - pow((u[j][i+1] - u[j][i-1])/(2*dx),2)
-                              - 2*((u[j+1][i] - u[j-1][i])/(2*dy) *
+                              - 2*((u[j+1][i] - u[j-1][i])/(2*dy)*
                                     (v[j][i+1]-v[j][i-1])/(2*dx)) -
                                     pow((v[j+1][i] - v[j-1][i])/(2*dy),2)));
       
@@ -51,21 +51,42 @@ float** build_up_b(int rho, float dt, float dx, float dy, float **u , float **v)
    return b;
 }
 
-float** pressure_poisson_periodic(float **p, float dx, float dy){
+float** pressure_poisson_periodic(float **p, float **b, float dx, float dy){
    float **pn;
    
    for(int q=0; q<nit; q++){
-      for(int i=0;i<=nx;i++){
-         for(int j=0;j<=ny;j++){
+      for(int i=0;i<nx;i++){
+         for(int j=0;j<ny;j++){
              pn[j][i] = p[j][i];
+         }
+      }
+
+      for(int i=1; i<nx-1;i++){
+         for(int j=1;j<ny-1;j++){
+            p[j][i]=(((pn[j][i+1]+pn[j][i-1])*pow(dy,2)+
+                      (pn[j+1][i]+pn[j-1][i])*pow(dx,2))/
+                      (2*(pow(dx,2)+pow(dy,2)))-
+                      pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[j][i]);
          }
       }
       
       //Periodic BC Pressure @ x = 2
+      for(int j=1;j<ny-1;j++){
+         p[j][nx-1]=(((pn[j][0]+pn[j][nx-2])*pow(dy,2)+
+                     (pn[j+1][nx-1]+pn[j-1][nx-1])*pow(dx,2))/
+                     (2*(pow(dx,2)+pow(dy,2)))-
+                     pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[j][nx-1]);
+      }
       //Periodic BC Pressure @ x = 0
+      for(int j=1;j<ny-1;j++){
+         p[j][0]=(((pn[j][1]+pn[j][nx-1])*pow(dy,2)+
+                     (pn[j+1][0]+pn[j-1][0])*pow(dx,2))/
+                     (2*(pow(dx,2)+pow(dy,2)))-
+                     pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[j][0]);
+      }
       //Wall boundary conditions, pressure
-       //dp/dy = 0 at y = 2
-       //dp/dy = 0 at y = 0
+      p[nx-1] = p[nx-2]; //dp/dy = 0 at y = 2
+      p[0] = p[1]; //dp/dy = 0 at y = 0
    }
    return p;
 }
@@ -93,7 +114,6 @@ int main() {
    float **p;
    float **pn;
    float **b;
-   
    
    for(int i=0;i<=nx;i++){
       x[i] =  (2-0)*i/nx;
@@ -131,9 +151,39 @@ int main() {
       }
       
       b = build_up_b(rho, dt, dx, dy, u, v);
-      p = pressure_poisson_periodic(p, dx, dy);
+      p = pressure_poisson_periodic(p, b, dx, dy);
       
+      for(int i=1;i<nx;i++){
+         for(int j=1;j<ny;j++){
+            u[j][i] = (un[j][i] -
+                       un[j][i] * dt/dx *
+                      (un[j][i] - un[j][i-1]) -
+                       vn[j][i] * dt/dy *
+                      (un[j][i] - un[j-1][i]) -
+                       dt/(2*rho*dx) *
+                      (p[j][i+1] - p[j][i-1]) +
+                       nu * (dt/pow(dx,2)*
+                      (un[j][i+1] - 2*un[j][i] + un[j][i-1]) +
+                       dt/pow(dy,2) *
+                      (un[j+1][i] - 2*un[j][i] + un[j-1][i])) +
+                       F* dt); 
+
+            v[j][i] = (vn[j][i] -
+                       un[j][i] * dt/dx *
+                      (vn[j][i] - vn[j][i-1]) -
+                       vn[j][i] * dt/dy *
+                      (vn[j][i] - vn[j-1][i]) -
+                       dt/(2*rho*dy) *
+                      (p[j+1][i] - p[j-1][i]) +
+                       nu * (dt/pow(dx,2)*
+                      (vn[j][i+1] - 2*vn[j][i] + vn[j][i-1]) +
+                       dt/pow(dy,2) *
+                      (vn[j+1][i] - 2*vn[j][i] + vn[j-1][i]))); 
+         }
+      }
+
       //Periodic BC u @ x = 2
+      
       //Periodic BC u @ x = 0
       //Periodic BC v @ x = 2
       //Periodic BC v @ x = 0
@@ -146,8 +196,10 @@ int main() {
             sumun += un[j][i];
          }
       }
-      
       udiff = (sumu - sumun)/ sumu ;
       stepcount += 1;     
    }
+
+   int printf(stepcount);
+
 }
