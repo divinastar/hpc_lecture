@@ -76,18 +76,29 @@ int main() {
    
    int udiff = 1;
    int stepcount = 0;
+   float sumu = 0;
+   float sumun = 0;
    
    while(udiff>.001){
-      un = std::copy(u);
-      vn = std::copy(v);
+      un = u;
+      vn = v;
       
       b = build_up_b(rho, dt, dx, dy, u, v);
       p = pressure_poisson_periodic(p, dx, dy);
       
       
+      sumu = 0;
+      sumun = 0;
+      for(int i=0;i<sizeof(u);i++){
+         sumu += u[i];
+      }
+      for(int i=0;i<sizeof(un);i++){
+         sumun += un[i];
+      }
       
-      udiff = (sum(u) - sum(un))/ sum(u)
-      stepcount += 1
+          
+      udiff = (sumu - sumun)/ sumu ;
+      stepcount += 1;
          
    }
    
