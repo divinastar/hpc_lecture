@@ -1,7 +1,30 @@
 #include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <iterator>
+
+float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
+   float b[ny][nx];
+   for(int i=0;i>nx;i++){
+      
+   }
+   //Periodic BC Pressure @x = 2
+   
+   //Periodic BC Pressure @x = 0
+   
+   return b;
+}
+
+float pressure_poisson_periodic(float p, float nx, float ny, int nit){
+   for(int q=0; q<nit; q++){
+      
+      
+      //Periodic BC Pressure @ x = 2
+      //Periodic BC Pressure @ x = 0
+      //Wall boundary conditions, pressure
+       //dp/dy = 0 at y = 2
+       //dp/dy = 0 at y = 0
+   }  
+   return p;
+}
+
 
 int main() {
    //Variable Declarations
@@ -69,9 +92,13 @@ int main() {
          }    
       }
       
-      //b = build_up_b(rho, dt, dx, dy, u, v);
-      //p = pressure_poisson_periodic(p, dx, dy);
+      b = build_up_b(rho, dt, dx, dy, u, v);
+      p = pressure_poisson_periodic(p, dx, dy);
       
+      //Periodic BC u @ x = 2
+      //Periodic BC u @ x = 0
+      //Periodic BC v @ x = 2
+      //Periodic BC v @ x = 0
       
       sumu = 0;
       sumun = 0;
@@ -81,8 +108,6 @@ int main() {
             sumun += un[j][i];
          }
       }
-
-      
           
       udiff = (sumu - sumun)/ sumu ;
       stepcount += 1;
@@ -90,24 +115,5 @@ int main() {
    }
       
 }
-
-//float build_up_b(int rho, float dt, float dx, float dy, float u, float v){
-   //float b[ny][nx];
-   //for(int i=0;i>nx;i++){
-      
-   //}
-   //Periodic BC Pressure @x = 2
-   
-   //Periodic BC Pressure @x = 0
-   
-   //return b;
-//}
-
-//float pressure_poisson_periodic(float p, float nx, float ny, int nit){
-   //for(int q=0; q<nit; q++){
-   //}  
-   //return p;
-//}
-
 
 
