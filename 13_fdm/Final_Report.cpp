@@ -9,7 +9,7 @@ const int nit = 50;
 const int c = 1;
 
 float** build_up_b(int rho, float dt, float dx, float dy, float **u, float **v){
-   float** b[ny][nx];
+   float b[ny][nx];
    for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
          b[j][i] = 0;
@@ -51,7 +51,7 @@ float** build_up_b(int rho, float dt, float dx, float dy, float **u, float **v){
 }
 
 float** pressure_poisson_periodic(float **p, float dx, float dy){
-   float** pn[ny][nx];
+   float pn[ny][nx];
    
    for(int q=0; q<nit; q++){
       for(int i=0;i<=nx;i++){
