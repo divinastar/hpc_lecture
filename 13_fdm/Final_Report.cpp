@@ -34,7 +34,7 @@ float build_up_b(int rho, float dt, float dx, float dy, float **u, float **v){
                               -pow((u[j][0] - u[j][nx-2])/(2*dx),2)
                                - 2*((u[j+1][nx-1]-u[j-1][nx-1])/(2*dy) *
                                     (v[j][0] - v[j][nx-2]/(2*dx)) -
-                                    pow((v[j+1][nx-1] - v[j-1][nx-1])/(2*dy),2))
+                                    pow((v[j+1][nx-1] - v[j-1][nx-1])/(2*dy),2));
    }
                                    
                                    
@@ -45,7 +45,7 @@ float build_up_b(int rho, float dt, float dx, float dy, float **u, float **v){
                               - pow((u[j][1] - u[j][nx-1])/(2*dx),2)
                                - 2*((u[j+1][0]-u[j-1][0])/(2*dy) *
                                     (v[j][1] - v[j][nx-1]/(2*dx)) -
-                                    pow((v[j+1][0] - v[j-1][0])/(2*dy),2))
+                                    pow((v[j+1][0] - v[j-1][0])/(2*dy),2));
    }                                  
    return b;
 }
