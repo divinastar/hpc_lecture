@@ -182,11 +182,69 @@ int main() {
          }
       }
 
-      //Periodic BC u @ x = 2
       
+      for(int j=1;j<ny;j++){
+      //Periodic BC u @ x = 2
+            u[j][nx-1] = (un[j][nx-1] -  
+                       un[j][nx-1] * dt/dx *
+                      (un[j][nx-1] - un[j][nx-2]) -
+                       vn[j][nx-1] * dt/dy *
+                      (un[j][nx-1] - un[j-1][nx-1]) -
+                       dt/(2*rho*dx) *
+                      (p[j][0] - p[j][nx-2]) +
+                       nu * (dt/pow(dx,2)*
+                      (un[j][0] - 2*un[j][nx-1] + un[j][nx-2]) +
+                       dt/pow(dy,2) *
+                      (un[j+1][nx-1] - 2*un[j][nx-1] + un[j-1][nx-1])) +
+                       F* dt); 
       //Periodic BC u @ x = 0
+            u[j][0] = (un[j][0] -  
+                       un[j][0] * dt/dx *
+                      (un[j][0] - un[j][nx-1]) -
+                       vn[j][0] * dt/dy *
+                      (un[j][0] - un[j-1][0]) -
+                       dt/(2*rho*dx) *
+                      (p[j][1] - p[j][nx-1]) +
+                       nu * (dt/pow(dx,2)*
+                      (un[j][1] - 2*un[j][0] + un[j][nx-1]) +
+                       dt/pow(dy,2) *
+                      (un[j+1][0] - 2*un[j][0] + un[j-1][0])) +
+                       F* dt); 
+
       //Periodic BC v @ x = 2
+            v[j][nx-1] = (vn[j][nx-1] -
+                       un[j][nx-1] * dt/dx *
+                      (vn[j][nx-1] - vn[j][nx-2]) -
+                       vn[j][nx-1] * dt/dy *
+                      (vn[j][nx-1] - vn[j-1][nx-1]) -
+                       dt/(2*rho*dy) *
+                      (p[j+1][nx-1] - p[j-1][nx-1]) +
+                       nu * (dt/pow(dx,2)*
+                      (vn[j][0] - 2*vn[j][nx-1] + vn[j][nx-2]) +
+                       dt/pow(dy,2) *
+                      (vn[j+1][nx-1] - 2*vn[j][nx-1] + vn[j-1][nx-1]))); 
       //Periodic BC v @ x = 0
+            v[j][0] = (vn[j][0] -
+                       un[j][0] * dt/dx *
+                      (vn[j][0] - vn[j][nx-1]) -
+                       vn[j][0] * dt/dy *
+                      (vn[j][0] - vn[j-1][0]) -
+                       dt/(2*rho*dy) *
+                      (p[j+1][0] - p[j-1][0]) +
+                       nu * (dt/pow(dx,2)*
+                      (vn[j][1] - 2*vn[j][0] + vn[j][nx-1]) +
+                       dt/pow(dy,2) *
+                      (vn[j+1][0] - 2*vn[j][0] + vn[j-1][0]))); 
+      }
+
+      
+      //Wall BC: u,v = 0 @ y = 0,2
+      for(int j=0; j<nx; j++){
+         u[0][j] = 0;
+         u[ny-1][j] = 0;
+         v[0][j] = 0;
+         v[ny-1][j] = 0;
+      }
       
       sumu = 0;
       sumun = 0;
@@ -200,6 +258,6 @@ int main() {
       stepcount += 1;     
    }
 
-   int printf(stepcount);
+   std::cout<< stepcount <<std::endl;
 
 }
