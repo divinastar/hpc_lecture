@@ -1,7 +1,9 @@
 #include <cstdio>
 #include <vector>
 #include <iostream>
+#include <array>
 #include <cmath>
+using namespace std;
 
 const int nx = 41;
 const int ny = 41;
@@ -9,8 +11,8 @@ const int nt = 10;
 const int nit = 50;
 const int c = 1;
 
-float** build_up_b(int rho, float dt, float dx, float dy, float **u , float **v){
-   float **b;
+std::vector<std::vector<float> > build_up_b(int rho, float dt, float dx, float dy, std::vector<std::vector<float> > u , std::vector<std::vector<float> > v){
+   std::vector<std::vector<float> > b;
    for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
          b[j][i] = 0;
@@ -51,8 +53,8 @@ float** build_up_b(int rho, float dt, float dx, float dy, float **u , float **v)
    return b;
 }
 
-float** pressure_poisson_periodic(float **p, float **b, float dx, float dy){
-   float **pn;
+std::vector<std::vector<float> > pressure_poisson_periodic(std::vector<std::vector<float> > p, std::vector<std::vector<float> > b, float dx, float dy){
+   std::vector<std::vector<float> > pn;
    
    for(int q=0; q<nit; q++){
       for(int i=0;i<nx;i++){
@@ -95,10 +97,10 @@ int main() {
    //Variable Declarations
    float dx = 2/(nx - 1);
    float dy = 2/(ny - 1);
-   float *x;
-   float *y;
-   float **X;
-   float **Y;
+   std::vector<float> x;
+   std::vector<float> y;
+   std::vector<std::vector<float> > X;
+   std::vector<std::vector<float> > Y;
    
    //Physical Variables
    const int rho = 1;
@@ -107,13 +109,13 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   float **u;
-   float **un;
-   float **v;
-   float **vn;
-   float **p;
-   float **pn;
-   float **b;
+   std::vector<std::vector<float> > u;
+   std::vector<std::vector<float> > un;
+   std::vector<std::vector<float> > v;
+   std::vector<std::vector<float> > vn;
+   std::vector<std::vector<float> > p;
+   std::vector<std::vector<float> > pn;
+   std::vector<std::vector<float> > b;
    
    for(int i=0;i<=nx;i++){
       x[i] =  (2-0)*i/nx;
@@ -236,7 +238,6 @@ int main() {
                        dt/pow(dy,2) *
                       (vn[j+1][0] - 2*vn[j][0] + vn[j-1][0]))); 
       }
-
       
       //Wall BC: u,v = 0 @ y = 0,2
       for(int j=0; j<nx; j++){
