@@ -8,7 +8,7 @@ const int nt = 10;
 const int nit = 50;
 const int c = 1;
 
-float build_up_b(int rho, float dt, float dx, float dy, float u[][], float v[][]){
+float build_up_b(int rho, float dt, float dx, float dy, float u[], float v[]){
    float b[ny][nx];
    for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
@@ -28,7 +28,7 @@ float build_up_b(int rho, float dt, float dx, float dy, float u[][], float v[][]
       }
    }
    //Periodic BC Pressure @x = 2
-   for(int j=1;j<ny;i++){
+   for(int j=1;j<ny;j++){
       b[j][nx-1] = (rho*(1/dt*((u[j][0] - u[j][nx-2])/(2*dx)
                               +(v[j+1][nx-1] - v[j-1][nx-1]/(2*dy))
                               -pow((u[j][0] - u[j][nx-2])/(2*dx),2)
@@ -39,7 +39,7 @@ float build_up_b(int rho, float dt, float dx, float dy, float u[][], float v[][]
                                    
                                    
    //Periodic BC Pressure @x = 0                               
-    for(int j=1;j<ny;i++){
+    for(int j=1;j<ny;j++){
       b[j][0] = (rho*(1/dt*((u[j][1] - u[j][nx-1])/(2*dx)
                               +(v[j+1][0] - v[j-1][0]/(2*dy))
                               - pow((u[j][1] - u[j][nx-1])/(2*dx),2)
