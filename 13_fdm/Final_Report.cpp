@@ -103,7 +103,7 @@ int main() {
       y[i] =  (2-0)*i/nx;
    }
    
-   for(int i=0;i<nx;i++){
+  for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
          X[i][j] = x[i];
          Y[i][j] = y[j];
