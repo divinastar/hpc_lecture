@@ -252,14 +252,17 @@ int main() {
             vn[j*nx+i] = v[j*nx+i];
          }    
       }
-      updated_u_v<<<ny,nx>>>();
+      
       build_up_b<<<ny,nx>>>(b,rho,dt,dx,dy,u,v);
+      std::cout<<cudaGetLastError()<<std::endl;
       cudaDeviceSynchronize();
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
+      std::cout<<cudaGetLastError()<<std::endl;
       cudaDeviceSynchronize();
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      //updated_u_v<<<ny,nx>>>();//u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<ny,nx>>>();//u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      std::cout<<cudaGetLastError()<<std::endl;
       cudaDeviceSynchronize();
 
       for(int i=0;i<nx;i++){
