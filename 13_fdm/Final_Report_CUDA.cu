@@ -75,9 +75,9 @@ __global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float d
                      (pn[m+nx]+pn[m-nx])*pow(dx,2))/
                      (2*(pow(dx,2)+pow(dy,2)))-
                      pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[m]);
-      }else if(bID == 0){
+      }else if(bId == 0){
          p[m] = p[m+nx];
-      }else if(bID == (ny-1)){
+      }else if(bId == (ny-1)){
          p[m] = p[m-nx];
       }
       
