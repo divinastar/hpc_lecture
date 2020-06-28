@@ -88,9 +88,7 @@ __global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, 
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
    int tId = threadIdx.x;
-   printf("Hello GPUhahah\n");
    if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
-      printf("Hello GPU\n");
       u[m] = (un[m] -
          un[m] * dt/dx *
         (un[m] - un[m-1]) -
@@ -200,7 +198,7 @@ int main() {
    //std::vector<float> un;
    //std::vector<float> v;
    //std::vector<float> vn;
-   std::vector<float> pn;
+   //std::vector<float> pn;
    //float *u;
    //float *v;
    /*
@@ -212,7 +210,7 @@ int main() {
       y.push_back((2-0)*i/(ny-1));
    }*/
    
-  for(int i=0;i<nx;i++){
+  /*for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
          //X[i][j] = x[i];
          //Y[i][j] = y[j];   
@@ -224,7 +222,7 @@ int main() {
          pn.push_back(1);
          //b.push_back(0);
       }
-   }
+   }*/
 
    float udiff = 1.0;
    int stepcount = 0;
@@ -236,6 +234,7 @@ int main() {
    float *v;
    float *un;
    float *vn;
+   float *pn;
 
    cudaMallocManaged(&b,ny*nx*sizeof(float));
    cudaMallocManaged(&p,ny*nx*sizeof(float));
@@ -243,12 +242,14 @@ int main() {
    cudaError_t err2=cudaMallocManaged(&v,ny*nx*sizeof(float));
    cudaMallocManaged(&un,ny*nx*sizeof(float));
    cudaMallocManaged(&vn,ny*nx*sizeof(float));
+   cudaMallocManaged(&pn,ny*nx*sizeof(float));
    std::cout<<err1<<" "<<err2<<std::endl;
    for(int i=0; i<ny*nx; i++) {
       u[i]=0.0;
       v[i]=0.0;
       un[i]=0.0;
       vn[i]=0.0;
+      pn[i]=1.0;
    }
 
    while(udiff>.001){
@@ -263,8 +264,8 @@ int main() {
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
       //b = build_up_b(rho, dt, dx, dy, u, v);
-      //pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
-      //cudaDeviceSynchronize();
+      pressure_poisson_periodic<<<ny,nx>>>(p,pn,b, dx, dy);
+      cudaDeviceSynchronize();
       //cudaFree(b);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //p = pressure_poisson_periodic(p, b, dx, dy);
