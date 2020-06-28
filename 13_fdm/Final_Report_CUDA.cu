@@ -239,6 +239,11 @@ int main() {
       v[i]=0;
    }
 
+   cudaMallocManaged(&b,dy*dx*sizeof(float));
+   cudaMallocManaged(&p,dy*dx*sizeof(float));
+   cudaMallocManaged(&u,dy*dx*sizeof(float));
+   cudaMallocManaged(&v,dy*dx*sizeof(float));
+
    while(udiff>.001){
       for(int i=0; i<nx; i++){
          for(int j=0; j<ny; j++){
@@ -247,16 +252,11 @@ int main() {
          }    
       }
       
-      cudaMallocManaged(&b,dy*dx*sizeof(float));
       build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u,v);
       //b = build_up_b(rho, dt, dx, dy, u, v);
-      cudaMallocManaged(&p,dy*dx*sizeof(float));
       pressure_poisson_periodic<<<dy,dx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      cudaMallocManaged(&u,dy*dx*sizeof(float));
-      cudaMallocManaged(&v,dy*dx*sizeof(float));
-
-      //updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       
       sumu = 0.0;
       sumun = 0.0;
