@@ -11,96 +11,108 @@ const int nt = 10;
 const int nit = 50;
 const int c = 1;
 
-std::vector<std::vector<float> > build_up_b(int rho, float dt, float dx, float dy, std::vector<std::vector<float> > u , std::vector<std::vector<float> > v){
-   std::vector<std::vector<float> > b;
+std::vector<float> build_up_b(int rho, float dt, float dx, float dy, std::vector<float> u , std::vector<float> v){
+   std::vector<float> b;
+   int m;
    for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
-         b[j][i] = 0;
+         b.push_back(0);
       }
    }
    
    for(int i=1;i<nx-1;i++){
       for(int j=1;j<ny-1;j++){
-         b[j][i] = (rho*(1/dt* ((u[j][i+1] - u[j][i-1])/(2*dx) 
-                              + (v[j+1][i] - v[j-1][i])/(2*dy))
-                              - pow((u[j][i+1] - u[j][i-1])/(2*dx),2)
-                              - 2*((u[j+1][i] - u[j-1][i])/(2*dy)*
-                                    (v[j][i+1]-v[j][i-1])/(2*dx)) -
-                                    pow((v[j+1][i] - v[j-1][i])/(2*dy),2)));
+         m = j*nx + i;
+         b[m] = (rho*(1/dt* ((u[m+1]-u[m-1])/(2*dx)
+                              + (v[m+nx] - v[m-nx])/(2*dy))
+                              - pow((u[m+1] - u[m-1])/(2*dx),2)
+                              - 2*((u[m+nx] - u[m-nx])/(2*dy)*
+                                    (v[m+1]-v[m-1])/(2*dx)) -
+                                    pow((v[m+nx] - v[m-nx])/(2*dy),2)));
       
       }
    }
+   
+   for(int j=1;j<ny-1;j++){
    //Periodic BC Pressure @x = 2
-   for(int j=1;j<ny;j++){
-      b[j][nx-1] = (rho*(1/dt*((u[j][0] - u[j][nx-2])/(2*dx)
-                              +(v[j+1][nx-1] - v[j-1][nx-1])/(2*dy))
-                              -pow((u[j][0] - u[j][nx-2])/(2*dx),2)
-                               - 2*((u[j+1][nx-1]-u[j-1][nx-1])/(2*dy) *
-                                    (v[j][0] - v[j][nx-2])/(2*dx)) -
-                                    pow((v[j+1][nx-1] - v[j-1][nx-1])/(2*dy),2)));
-   }
+      m = j*nx + nx-1;
+      b[m] = (rho*(1/dt*((u[m-nx+1] - u[m-1])/(2*dx)
+                              +(v[m+nx] - v[m-nx])/(2*dy))
+                              -pow((u[m-nx+1] - u[m-1])/(2*dx),2)
+                               - 2*((u[m+nx]-u[m-nx])/(2*dy) *
+                                    (v[m-nx+1] - v[m-1])/(2*dx)) -
+                                    pow((v[m+nx] - v[m-nx])/(2*dy),2)));
+
                                    
                                    
-   //Periodic BC Pressure @x = 0                               
-    for(int j=1;j<ny;j++){
-      b[j][0] = (rho*(1/dt*((u[j][1] - u[j][nx-1])/(2*dx)
-                              +(v[j+1][0] - v[j-1][0])   /(2*dy))
-                              - pow((u[j][1] - u[j][nx-1])/(2*dx),2)
-                               - 2*((u[j+1][0]-u[j-1][0])/(2*dy) *
-                                    (v[j][1] - v[j][nx-1])/(2*dx)) -
-                                    pow((v[j+1][0] - v[j-1][0])/(2*dy),2)));
+   //Periodic BC Pressure @x = 0
+      m = j*nx;                               
+      b[m] = (rho*(1/dt*((u[m+1] - u[m+nx-1])/(2*dx)
+                              +(v[m+nx] - v[m-nx])   /(2*dy))
+                              - pow((u[m+1] - u[m+nx-1])/(2*dx),2)
+                               - 2*((u[m+nx]-u[m-nx])/(2*dy) *
+                                    (v[m+1] - v[m+nx-1])/(2*dx)) -
+                                    pow((v[m+nx] - v[m-nx])/(2*dy),2)));
    }                                  
    return b;
 }
 
-std::vector<std::vector<float> > pressure_poisson_periodic(std::vector<std::vector<float> > p, std::vector<std::vector<float> > b, float dx, float dy){
-   std::vector<std::vector<float> > pn;
+std::vector<float> pressure_poisson_periodic(std::vector<float> p, std::vector<float> b, float dx, float dy){
+   std::vector<float> pn(nx*ny, 1);
+   int m;
    
    for(int q=0; q<nit; q++){
       for(int i=0;i<nx;i++){
          for(int j=0;j<ny;j++){
-             pn[j][i] = p[j][i];
+             pn[j*nx+i] = p[j*nx+i];
          }
       }
 
-      for(int i=1; i<nx-1;i++){
+      for(int i=1;i<nx-1;i++){
          for(int j=1;j<ny-1;j++){
-            p[j][i]=(((pn[j][i+1]+pn[j][i-1])*pow(dy,2)+
-                      (pn[j+1][i]+pn[j-1][i])*pow(dx,2))/
+            m = j*nx+i;
+            p[m]=(((pn[m+1]+pn[m-1])*pow(dy,2)+
+                      (pn[m+nx]+pn[m-nx])*pow(dx,2))/
                       (2*(pow(dx,2)+pow(dy,2)))-
-                      pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[j][i]);
+                      pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[m]);
          }
       }
       
-      //Periodic BC Pressure @ x = 2
       for(int j=1;j<ny-1;j++){
-         p[j][nx-1]=(((pn[j][0]+pn[j][nx-2])*pow(dy,2)+
-                     (pn[j+1][nx-1]+pn[j-1][nx-1])*pow(dx,2))/
+         //Periodic BC Pressure @ x = 2
+         m = j*nx +nx-1;
+         p[m]=(((pn[m-nx+1]+pn[m-1])*pow(dy,2)+
+                     (pn[m+nx]+pn[m-nx])*pow(dx,2))/
                      (2*(pow(dx,2)+pow(dy,2)))-
-                     pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[j][nx-1]);
-      }
-      //Periodic BC Pressure @ x = 0
-      for(int j=1;j<ny-1;j++){
-         p[j][0]=(((pn[j][1]+pn[j][nx-1])*pow(dy,2)+
-                     (pn[j+1][0]+pn[j-1][0])*pow(dx,2))/
+                     pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[m]);
+     
+         //Periodic BC Pressure @ x = 0
+         m = j*nx;
+         p[m]=(((pn[m+1]+pn[m+nx-1])*pow(dy,2)+
+                     (pn[m+nx]+pn[m-nx])*pow(dx,2))/
                      (2*(pow(dx,2)+pow(dy,2)))-
-                     pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[j][0]);
+                     pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[m]);
       }
-      //Wall boundary conditions, pressure
-      p[nx-1] = p[nx-2]; //dp/dy = 0 at y = 2
-      p[0] = p[1]; //dp/dy = 0 at y = 0
+
+      for(int i=0;i<nx;i++){
+         //Wall boundary conditions, pressure
+         p[nx*(ny-1)+i] = p[nx*(ny-2)+i]; //dp/dy = 0 at y = 2
+         p[i] = p[nx+i]; //dp/dy = 0 at y = 0
+      }
+      
    }
    return p;
 }
 
 int main() {
    //Variable Declarations
-   float dx = 2/(nx - 1);
-   float dy = 2/(ny - 1);
-   std::vector<float> x;
-   std::vector<float> y;
-   std::vector<std::vector<float> > X;
-   std::vector<std::vector<float> > Y;
+   float dx = 2/(nx - 1.0);
+   float dy = 2/(ny - 1.0);
+   //std::vector<float> x;
+   //std::vector<float> y;
+   //std::vector<std::vector<float> > X;
+   //std::vector<std::vector<float> > Y;
+   int m;
    
    //Physical Variables
    const int rho = 1;
@@ -109,154 +121,182 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   std::vector<std::vector<float> > u;
-   std::vector<std::vector<float> > un;
-   std::vector<std::vector<float> > v;
-   std::vector<std::vector<float> > vn;
-   std::vector<std::vector<float> > p;
-   std::vector<std::vector<float> > pn;
-   std::vector<std::vector<float> > b;
-   
-   for(int i=0;i<=nx;i++){
-      x[i] =  (2-0)*i/nx;
+   std::vector<float> u;
+   std::vector<float> un;
+   std::vector<float> v;
+   std::vector<float> vn;
+   std::vector<float> p;
+   std::vector<float> pn;
+   std::vector<float> b;
+   /*
+   for(int i=0;i<nx;i++){
+      x.push_back((2-0)*i/(nx-1));
    }
    
-   for(int i=0;i<=ny;i++){
-      y[i] =  (2-0)*i/nx;
-   }
+   for(int i=0;i<ny;i++){
+      y.push_back((2-0)*i/(ny-1));
+   }*/
    
   for(int i=0;i<nx;i++){
       for(int j=0;j<ny;j++){
-         X[i][j] = x[i];
-         Y[i][j] = y[j];
-         u[j][i] = 0;
-         un[j][i] = 0;
-         v[j][i] = 0;
-         vn[j][i] = 0;
-         p[j][i] = 1;
-         pn[j][i] = 1;
-         b[j][i] = 0;
+         //X[i][j] = x[i];
+         //Y[i][j] = y[j];   
+         u.push_back(0);
+         un.push_back(0);
+         v.push_back(0);
+         vn.push_back(0);
+         p.push_back(1);
+         pn.push_back(1);
+         b.push_back(0);
       }
    }
-   
-   int udiff = 1;
+   std::cout<<u.size()<<std::endl;
+   std::cout<<un.size()<<std::endl;
+   float udiff = 1.0;
    int stepcount = 0;
-   float sumu = 0;
-   float sumun = 0;
+   float sumu = 0.0;
+   float sumun = 0.0;
    
    while(udiff>.001){
       for(int i=0; i<nx; i++){
          for(int j=0; j<ny; j++){
-            un[j][i] = u[j][i];
-            vn[j][i] = v[j][i];
+            un[j*nx+i] = u[j*nx+i];
+            vn[j*nx+i] = v[j*nx+i];
+            //std::cout<<"un "<<un[j*nx+i]<<std::endl;
+            //std::cout<<"vn "<<vn[j*nx+i]<<std::endl;
          }    
       }
+      
       
       b = build_up_b(rho, dt, dx, dy, u, v);
       p = pressure_poisson_periodic(p, b, dx, dy);
       
-      for(int i=1;i<nx;i++){
-         for(int j=1;j<ny;j++){
-            u[j][i] = (un[j][i] -
-                       un[j][i] * dt/dx *
-                      (un[j][i] - un[j][i-1]) -
-                       vn[j][i] * dt/dy *
-                      (un[j][i] - un[j-1][i]) -
+      /*for(int i=0; i<nx; i++){
+         for(int j=0; j<nx; j++){
+            std::cout<<"b "<<b[j*nx+i]<<std::endl;
+            std::cout<<"p "<<p[j*nx+i]<<std::endl;
+         }
+      }*/
+      
+      
+      
+      for(int i=1;i<nx-1;i++){
+         for(int j=1;j<ny-1;j++){
+            m = j*nx + i;
+
+            u[m] = (un[m] -
+                       un[m] * dt/dx *
+                      (un[m] - un[m-1]) -
+                       vn[m] * dt/dy *
+                      (un[m] - un[m-nx]) -
                        dt/(2*rho*dx) *
-                      (p[j][i+1] - p[j][i-1]) +
+                      (p[m+1] - p[m-1]) +
                        nu * (dt/pow(dx,2)*
-                      (un[j][i+1] - 2*un[j][i] + un[j][i-1]) +
+                      (un[m+1] - 2*un[m] + un[m-1]) +
                        dt/pow(dy,2) *
-                      (un[j+1][i] - 2*un[j][i] + un[j-1][i])) +
+                      (un[m+nx] - 2*un[m] + un[m-nx])) +
                        F* dt); 
 
-            v[j][i] = (vn[j][i] -
-                       un[j][i] * dt/dx *
-                      (vn[j][i] - vn[j][i-1]) -
-                       vn[j][i] * dt/dy *
-                      (vn[j][i] - vn[j-1][i]) -
+            v[m] = (vn[m] -
+                       un[m] * dt/dx *
+                      (vn[m] - vn[m-1]) -
+                       vn[m] * dt/dy *
+                      (vn[m] - vn[m-nx]) -
                        dt/(2*rho*dy) *
-                      (p[j+1][i] - p[j-1][i]) +
+                      (p[m+nx] - p[m-nx]) +
                        nu * (dt/pow(dx,2)*
-                      (vn[j][i+1] - 2*vn[j][i] + vn[j][i-1]) +
+                      (vn[m+1] - 2*vn[m] + vn[m-1]) +
                        dt/pow(dy,2) *
-                      (vn[j+1][i] - 2*vn[j][i] + vn[j-1][i]))); 
+                      (vn[m+nx] - 2*vn[m] + vn[m-nx]))); 
          }
       }
 
       
-      for(int j=1;j<ny;j++){
-      //Periodic BC u @ x = 2
-            u[j][nx-1] = (un[j][nx-1] -  
-                       un[j][nx-1] * dt/dx *
-                      (un[j][nx-1] - un[j][nx-2]) -
-                       vn[j][nx-1] * dt/dy *
-                      (un[j][nx-1] - un[j-1][nx-1]) -
+      for(int j=1;j<ny-1;j++){
+            m = j*nx + nx-1 ;
+      //Periodic BC u @ x = 2 u[j][nx-1]
+            u[m] = (un[m] -  
+                       un[m] * dt/dx *
+                      (un[m] - un[m-1]) -
+                       vn[m] * dt/dy *
+                      (un[m] - un[m-nx]) -
                        dt/(2*rho*dx) *
-                      (p[j][0] - p[j][nx-2]) +
+                      (p[m-nx+1] - p[m-1]) +
                        nu * (dt/pow(dx,2)*
-                      (un[j][0] - 2*un[j][nx-1] + un[j][nx-2]) +
+                      (un[m-nx+1] - 2*un[m] + un[m-1]) +
                        dt/pow(dy,2) *
-                      (un[j+1][nx-1] - 2*un[j][nx-1] + un[j-1][nx-1])) +
-                       F* dt); 
-      //Periodic BC u @ x = 0
-            u[j][0] = (un[j][0] -  
-                       un[j][0] * dt/dx *
-                      (un[j][0] - un[j][nx-1]) -
-                       vn[j][0] * dt/dy *
-                      (un[j][0] - un[j-1][0]) -
-                       dt/(2*rho*dx) *
-                      (p[j][1] - p[j][nx-1]) +
-                       nu * (dt/pow(dx,2)*
-                      (un[j][1] - 2*un[j][0] + un[j][nx-1]) +
-                       dt/pow(dy,2) *
-                      (un[j+1][0] - 2*un[j][0] + un[j-1][0])) +
+                      (un[m+nx] - 2*un[m] + un[m-nx])) +
                        F* dt); 
 
       //Periodic BC v @ x = 2
-            v[j][nx-1] = (vn[j][nx-1] -
-                       un[j][nx-1] * dt/dx *
-                      (vn[j][nx-1] - vn[j][nx-2]) -
-                       vn[j][nx-1] * dt/dy *
-                      (vn[j][nx-1] - vn[j-1][nx-1]) -
+            v[m] = (vn[m] -
+                       un[m] * dt/dx *
+                      (vn[m] - vn[m-1]) -
+                       vn[m] * dt/dy *
+                      (vn[m] - vn[m-nx]) -
                        dt/(2*rho*dy) *
-                      (p[j+1][nx-1] - p[j-1][nx-1]) +
+                      (p[m+nx] - p[m-nx]) +
                        nu * (dt/pow(dx,2)*
-                      (vn[j][0] - 2*vn[j][nx-1] + vn[j][nx-2]) +
+                      (vn[m-nx+1] - 2*vn[m] + vn[m-1]) +
                        dt/pow(dy,2) *
-                      (vn[j+1][nx-1] - 2*vn[j][nx-1] + vn[j-1][nx-1]))); 
+                      (vn[m+nx] - 2*vn[m] + vn[m-nx])));
+
+
+            m = j*nx; 
+      //Periodic BC u @ x = 0
+            u[m] = (un[m] -  
+                       un[m] * dt/dx *
+                      (un[m] - un[m+nx-1]) -
+                       vn[m] * dt/dy *
+                      (un[m] - un[m-nx]) -
+                       dt/(2*rho*dx) *
+                      (p[m+1] - p[m+nx-1]) +
+                       nu * (dt/pow(dx,2)*
+                      (un[m+1] - 2*un[m] + un[m+nx-1]) +
+                       dt/pow(dy,2) *
+                      (un[m+nx] - 2*un[m] + un[m-nx])) +
+                       F* dt); 
+
       //Periodic BC v @ x = 0
-            v[j][0] = (vn[j][0] -
-                       un[j][0] * dt/dx *
-                      (vn[j][0] - vn[j][nx-1]) -
-                       vn[j][0] * dt/dy *
-                      (vn[j][0] - vn[j-1][0]) -
+            v[m] = (vn[m] -
+                       un[m] * dt/dx *
+                      (vn[m] - vn[m+nx-1]) -
+                       vn[m] * dt/dy *
+                      (vn[m] - vn[m-nx]) -
                        dt/(2*rho*dy) *
-                      (p[j+1][0] - p[j-1][0]) +
+                      (p[m+nx] - p[m-nx]) +
                        nu * (dt/pow(dx,2)*
-                      (vn[j][1] - 2*vn[j][0] + vn[j][nx-1]) +
+                      (vn[m+1] - 2*vn[m] + vn[m+nx-1]) +
                        dt/pow(dy,2) *
-                      (vn[j+1][0] - 2*vn[j][0] + vn[j-1][0]))); 
+                      (vn[m+nx] - 2*vn[m] + vn[m-nx]))); 
       }
       
       //Wall BC: u,v = 0 @ y = 0,2
-      for(int j=0; j<nx; j++){
-         u[0][j] = 0;
-         u[ny-1][j] = 0;
-         v[0][j] = 0;
-         v[ny-1][j] = 0;
+      
+      for(int i=0; i<nx; i++){
+         u[i] = 0;
+         u[nx*(ny-1)+i] = 0;
+         v[i] = 0;
+         v[nx*(ny-1)+i] = 0;
       }
       
-      sumu = 0;
-      sumun = 0;
+      sumu = 0.0;
+      sumun = 0.0;
       for(int i=0;i<nx;i++){
          for(int j=0; j<ny;j++){
-            sumu += u[j][i];
-            sumun += un[j][i];
+            m = j*nx+i;
+
+            sumu += u[m];
+            sumun += un[m];
+            
          }
       }
       udiff = (sumu - sumun)/ sumu ;
-      stepcount += 1;     
+      std::cout<<"udiff "<<udiff<<std::endl;
+      std::cout<<"sumu "<<sumu<<std::endl;
+
+      stepcount += 1;  
+       
    }
 
    std::cout<< stepcount <<std::endl;
