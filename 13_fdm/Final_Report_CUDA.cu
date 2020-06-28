@@ -47,7 +47,7 @@ __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, std:
                                   - 2*((u[m+nx]-u[m-nx])/(2*dy) *
                                        (v[m+1] - v[m+nx-1])/(2*dx)) -
                                        pow((v[m+nx] - v[m-nx])/(2*dy),2)));
-      } 
+       
    }
 }
 
