@@ -256,8 +256,9 @@ int main() {
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      cudaError_t error=updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       cudaDeviceSynchronize();
+      std::cout<<error<<std::endl;
       for(int i=0;i<nx;i++){
          for(int j=0; j<ny;j++){
             std::cout<<"u "<<u[j*nx+i]<<std::endl;
