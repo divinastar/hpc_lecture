@@ -115,7 +115,7 @@ __global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, 
             dt/pow(dy,2) *
            (vn[m+nx] - 2*vn[m] + vn[m-nx])));
 
-   }else if(bId != 0 && bId != (ny-1) && tId == (nx-1)){
+   }/*else if(bId != 0 && bId != (ny-1) && tId == (nx-1)){
          //Periodic BC u @ x = 2 u[j][nx-1]
          u[m] = (un[m] -  
             un[m] * dt/dx *
@@ -174,7 +174,7 @@ __global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, 
       //Wall BC: u,v = 0 @ y = 0,2
       u[m] = 0;
       v[m] = 0;
-   }
+   }*/
 
 }
 
@@ -269,7 +269,6 @@ int main() {
          }
       }
       udiff = (sumu - sumun)/ sumu ;
-      udiff = 0.0005;
       std::cout<<"udiff "<<udiff<<std::endl;
       stepcount += 1;  
        
