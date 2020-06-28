@@ -83,15 +83,15 @@ __global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float d
    }
 }
 
-__global__ void updated_u_v(void){//float *u, float *v){ //float *un, float *vn, float *p, float dx, float dy, float dt, float rho, float nu, float F){
+__global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, float dx, float dy, float dt, float rho, float nu, float F){
    //m = j * nx + i
-   //int m = blockIdx.x * blockDim.x + threadIdx.x;
-   //int bId = blockIdx.x;
-   //int tId = threadIdx.x;
+   int m = blockIdx.x * blockDim.x + threadIdx.x;
+   int bId = blockIdx.x;
+   int tId = threadIdx.x;
    printf("Hello GPUhahah\n");
-   /*if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
+   if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
       printf("Hello GPU\n");
-      u[m] = 1;/*(un[m] -
+      u[m] = (un[m] -
          un[m] * dt/dx *
         (un[m] - un[m-1]) -
          vn[m] * dt/dy *
@@ -175,7 +175,7 @@ __global__ void updated_u_v(void){//float *u, float *v){ //float *un, float *vn,
       //Wall BC: u,v = 0 @ y = 0,2
       u[m] = 0;
       v[m] = 0;
-   }*/
+   }
 
 }
 
@@ -262,7 +262,7 @@ int main() {
       //cudaFree(b);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      updated_u_v<<<1,1>>>();//u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
 
