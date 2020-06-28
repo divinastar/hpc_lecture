@@ -269,6 +269,7 @@ int main() {
          }
       }
       udiff = (sumu - sumun)/ sumu ;
+      udiff = 0.0005;
       std::cout<<"udiff "<<udiff<<std::endl;
       stepcount += 1;  
        
