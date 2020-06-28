@@ -256,7 +256,7 @@ int main() {
       cudaMallocManaged(&u,dy*dx*sizeof(float));
       cudaMallocManaged(&v,dy*dx*sizeof(float));
 
-      updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      //updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       
       sumu = 0.0;
       sumun = 0.0;
