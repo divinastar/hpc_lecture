@@ -197,9 +197,9 @@ int main() {
    
    //Initial Conditions
    //std::vector<float> u;
-   std::vector<float> un;
+   //std::vector<float> un;
    //std::vector<float> v;
-   std::vector<float> vn;
+   //std::vector<float> vn;
    std::vector<float> pn;
    //float *u;
    //float *v;
@@ -234,15 +234,21 @@ int main() {
    float *p;
    float *u;
    float *v;
+   float *un;
+   float *vn;
 
    cudaMallocManaged(&b,ny*nx*sizeof(float));
    cudaMallocManaged(&p,ny*nx*sizeof(float));
    cudaError_t err1=cudaMallocManaged(&u,ny*nx*sizeof(float));
    cudaError_t err2=cudaMallocManaged(&v,ny*nx*sizeof(float));
+   cudaMallocManaged(&un,ny*nx*sizeof(float));
+   cudaMallocManaged(&vn,ny*nx*sizeof(float));
    std::cout<<err1<<" "<<err2<<std::endl;
    for(int i=0; i<ny*nx; i++) {
       u[i]=0.0;
       v[i]=0.0;
+      un[i]=0.0;
+      vn[i]=0.0;
    }
 
    while(udiff>.001){
@@ -262,7 +268,7 @@ int main() {
       //cudaFree(b);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<ny,nx>>>(u,v,un,vn,p,dx,dy,dt,rho,nu,F);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
