@@ -16,6 +16,7 @@ __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, floa
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
    int tId = threadIdx.x;
+   printf("Hello buildupb\n")
 
    b[m] = 0;
    
@@ -52,6 +53,7 @@ __global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float d
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
    int tId = threadIdx.x;
+   printf("Hello Poisson\n")
 
    for(int q=0; q<nit; q++){
       __syncthreads();
