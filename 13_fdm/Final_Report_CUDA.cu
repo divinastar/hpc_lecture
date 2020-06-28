@@ -259,6 +259,7 @@ int main() {
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
       cudaDeviceSynchronize();
+      cudaFree(b);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //p = pressure_poisson_periodic(p, b, dx, dy);
       updated_u_v<<<ny,nx>>>();//u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
