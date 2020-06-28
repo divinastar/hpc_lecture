@@ -21,9 +21,12 @@ __device__ __managed__ std::vector<float> vn;*/
 __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, std::vector<float> u , std::vector<float> v){
    //m = j * nx + i
    int m = blockIdx.x * blockDim.x + threadIdx.x;
+   int bId = blockIdx.x;
+   int tId = threadIdx.x;
+
    b[m] = 0;
    
-   if(blockIdx.x != 0 && blockIdx.x != (ny-1) && threadIdx.x != 0 && threadIdx != (nx-1)){
+   if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
       b[m] = (rho*(1/dt* ((u[m+1]-u[m-1])/(2*dx)
                               + (v[m+nx] - v[m-nx])/(2*dy))
                               - pow((u[m+1] - u[m-1])/(2*dx),2)
@@ -31,7 +34,7 @@ __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, std:
                                     (v[m+1]-v[m-1])/(2*dx)) -
                                     pow((v[m+nx] - v[m-nx])/(2*dy),2)));
     
-   }else if(blockIdx.x != 0 && blockIdx.x != (ny-1) && threadIdx.x == (nx-1)){
+   }else if(bId != 0 && bId != (ny-1) && tId == (nx-1)){
       //Periodic BC Pressure @x = 2
       b[m] = (rho*(1/dt*((u[m-nx+1] - u[m-1])/(2*dx)
                               +(v[m+nx] - v[m-nx])/(2*dy))
@@ -39,7 +42,7 @@ __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, std:
                                - 2*((u[m+nx]-u[m-nx])/(2*dy) *
                                     (v[m-nx+1] - v[m-1])/(2*dx)) -
                                     pow((v[m+nx] - v[m-nx])/(2*dy),2)));
-   }else if(blockIdx.x != 0 && blockIdx.x != (ny-1) && threadIdx.x == (0)){
+   }else if(bId != 0 && bId != (ny-1) && tId == (0)){
       //Periodic BC Pressure @x = 0                               
          b[m] = (rho*(1/dt*((u[m+1] - u[m+nx-1])/(2*dx)
                                  +(v[m+nx] - v[m-nx])   /(2*dy))
