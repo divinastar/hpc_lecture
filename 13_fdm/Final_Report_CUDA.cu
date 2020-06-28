@@ -257,16 +257,14 @@ int main() {
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
       //b = build_up_b(rho, dt, dx, dy, u, v);
-      updated_u_v<<<1,1>>>();//u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
-      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
-      pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
-      cudaDeviceSynchronize();
+      //pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
+      //cudaDeviceSynchronize();
       //cudaFree(b);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      /*updated_u_v<<<1,1>>>();//u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<1,1>>>();//u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
-      cudaDeviceSynchronize();*/
+      cudaDeviceSynchronize();
 
       for(int i=0;i<nx;i++){
          for(int j=0; j<ny;j++){
