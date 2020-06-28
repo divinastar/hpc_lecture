@@ -7,9 +7,9 @@ using namespace std;
 
 const int nx = 5;
 const int ny = 5;
-const int nt = 10;
+//const int nt = 10;
 const int nit = 50;
-const int c = 1;
+//const int c = 1;
 
 /*__device__ __managed__ std::vector<float> b;
 __device__ __managed__ std::vector<float> p;
@@ -118,12 +118,14 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   std::vector<float> u;
+   //std::vector<float> u;
    std::vector<float> un;
-   std::vector<float> v;
+   //std::vector<float> v;
    std::vector<float> vn;
    std::vector<float> p;
    std::vector<float> pn;
+   float *u;
+   float *v;
    //std::vector<float> b;
    /*
    for(int i=0;i<nx;i++){
