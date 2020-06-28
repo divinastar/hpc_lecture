@@ -83,7 +83,7 @@ __global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float d
    }
 }
 
-__global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, float dx, float dy, float dt, int rho, float nu, int F){
+__global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, float dx, float dy, float dt, float rho, float nu, float F){
    //m = j * nx + i
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
@@ -189,9 +189,9 @@ int main() {
    int m;
    
    //Physical Variables
-   const int rho = 1;
+   const float rho = 1.0;
    const float nu = .1;
-   const int F = 1;
+   const float F = 1.0;
    const float dt = .01;
    
    //Initial Conditions
