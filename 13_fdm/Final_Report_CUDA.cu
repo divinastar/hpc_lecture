@@ -257,9 +257,11 @@ int main() {
       pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
       updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      cudaDeviceSynchronize();
       for(int i=0;i<nx;i++){
          for(int j=0; j<ny;j++){
-            std::cout<<u[j*nx+i]<<std::endl;
+            std::cout<<"u "<<u[j*nx+i]<<std::endl;
+            std::cout<<"un "<<un[j*nx+i]<<std::endl;
          }
       }
 
@@ -278,7 +280,7 @@ int main() {
       stepcount += 1;  
        
    }
-   cudaDeviceSynchronize();
+   
    std::cout<< stepcount <<std::endl;
    //cudaFree(b);
 
