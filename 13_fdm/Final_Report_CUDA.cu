@@ -83,7 +83,7 @@ __global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float d
    }
 }
 
-__global__ void updated_u_v(void)//float *u, float *v){ //float *un, float *vn, float *p, float dx, float dy, float dt, float rho, float nu, float F){
+__global__ void updated_u_v(void){//float *u, float *v){ //float *un, float *vn, float *p, float dx, float dy, float dt, float rho, float nu, float F){
    //m = j * nx + i
    //int m = blockIdx.x * blockDim.x + threadIdx.x;
    //int bId = blockIdx.x;
