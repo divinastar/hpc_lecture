@@ -224,8 +224,7 @@ int main() {
          //b.push_back(0);
       }
    }
-   std::cout<<u.size()<<std::endl;
-   std::cout<<un.size()<<std::endl;
+
    float udiff = 1.0;
    int stepcount = 0;
    float sumu = 0.0;
@@ -240,6 +239,9 @@ int main() {
       v[i]=0;
    }
 
+   std::cout<<u.size()<<std::endl;
+   std::cout<<un.size()<<std::endl;
+   
    while(udiff>.001){
       for(int i=0; i<nx; i++){
          for(int j=0; j<ny; j++){
