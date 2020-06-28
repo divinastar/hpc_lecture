@@ -118,14 +118,14 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   //std::vector<float> u;
+   std::vector<float> u;
    std::vector<float> un;
-   //std::vector<float> v;
+   std::vector<float> v;
    std::vector<float> vn;
    std::vector<float> p;
    std::vector<float> pn;
-   float *u;
-   float *v;
+   //float *u;
+   //float *v;
    //std::vector<float> b;
    /*
    for(int i=0;i<nx;i++){
@@ -169,7 +169,7 @@ int main() {
       float *b;
       
       cudaMallocManaged(&b,dy*dx*sizeof(float));
-      build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u,v);
+      build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,&u,&v);
       
       //b = build_up_b(rho, dt, dx, dy, u, v);
       //p = pressure_poisson_periodic(p, b, dx, dy);
