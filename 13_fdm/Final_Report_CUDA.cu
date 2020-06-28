@@ -47,51 +47,42 @@ __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, floa
    }
 }
 
-std::vector<float> pressure_poisson_periodic(std::vector<float> p, std::vector<float> b, float dx, float dy){
-   std::vector<float> pn(nx*ny, 1);
-   int m;
-   
-   for(int q=0; q<nit; q++){
-      for(int i=0;i<nx;i++){
-         for(int j=0;j<ny;j++){
-             pn[j*nx+i] = p[j*nx+i];
-         }
-      }
+__global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float dx, float dy){
+   //m = j * nx + i
+   int m = blockIdx.x * blockDim.x + threadIdx.x;
+   int bId = blockIdx.x;
+   int tId = threadIdx.x;
 
-      for(int i=1;i<nx-1;i++){
-         for(int j=1;j<ny-1;j++){
-            m = j*nx+i;
-            p[m]=(((pn[m+1]+pn[m-1])*pow(dy,2)+
+   for(int q=0; q<nit; q++){
+      __syncthreads();
+      pn[m] = p[m];
+      __syncthreads();
+
+      if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
+         p[m]=(((pn[m+1]+pn[m-1])*pow(dy,2)+
                       (pn[m+nx]+pn[m-nx])*pow(dx,2))/
                       (2*(pow(dx,2)+pow(dy,2)))-
                       pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[m]);
-         }
-      }
-      
-      for(int j=1;j<ny-1;j++){
+      }else if(bId != 0 && bId != (ny-1) && tId == (nx-1)){
          //Periodic BC Pressure @ x = 2
-         m = j*nx +nx-1;
          p[m]=(((pn[m-nx+1]+pn[m-1])*pow(dy,2)+
                      (pn[m+nx]+pn[m-nx])*pow(dx,2))/
                      (2*(pow(dx,2)+pow(dy,2)))-
                      pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[m]);
-     
+      }else if(bId != 0 && bId != (ny-1) && tId == (0)){
          //Periodic BC Pressure @ x = 0
-         m = j*nx;
          p[m]=(((pn[m+1]+pn[m+nx-1])*pow(dy,2)+
                      (pn[m+nx]+pn[m-nx])*pow(dx,2))/
                      (2*(pow(dx,2)+pow(dy,2)))-
                      pow(dx,2)*pow(dy,2)/(2*(pow(dx,2)+pow(dy,2)))*b[m]);
-      }
-
-      for(int i=0;i<nx;i++){
-         //Wall boundary conditions, pressure
-         p[nx*(ny-1)+i] = p[nx*(ny-2)+i]; //dp/dy = 0 at y = 2
-         p[i] = p[nx+i]; //dp/dy = 0 at y = 0
+      }else if(bID == 0){
+         p[m] = p[m+nx];
+      }else if(bID == (ny-1)){
+         p[m] = p[m-nx];
       }
       
    }
-   return p;
+
 }
 
 int main() {
@@ -137,7 +128,7 @@ int main() {
          un.push_back(0);
          v.push_back(0);
          vn.push_back(0);
-         p.push_back(1);
+         //p.push_back(1);
          pn.push_back(1);
          //b.push_back(0);
       }
@@ -160,12 +151,14 @@ int main() {
       }
 
       float *b;
+      float *p;
       
       cudaMallocManaged(&b,dy*dx*sizeof(float));
       build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u.data(),v.data());
-      
       //b = build_up_b(rho, dt, dx, dy, u, v);
-      p = pressure_poisson_periodic(p, b, dx, dy);
+      cudaMallocManaged(&p,dy*dx*sizeof(float));
+      pressure_poisson_periodic<<dy,dx>>(p,pn.data(), b, dx, dy);
+      //p = pressure_poisson_periodic(p, b, dx, dy);
       
       /*for(int i=0; i<nx; i++){
          for(int j=0; j<nx; j++){
