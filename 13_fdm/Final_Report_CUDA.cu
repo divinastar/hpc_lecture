@@ -16,7 +16,6 @@ __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, floa
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
    int tId = threadIdx.x;
-   printf("Hello buildupb\n");
 
    b[m] = 0;
    
@@ -53,7 +52,6 @@ __global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float d
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
    int tId = threadIdx.x;
-   printf("Hello Poisson\n");
 
    for(int q=0; q<nit; q++){
       __syncthreads();
@@ -239,21 +237,21 @@ int main() {
 
    cudaMallocManaged(&b,ny*nx*sizeof(float));
    cudaMallocManaged(&p,ny*nx*sizeof(float));
-   cudaMallocManaged(&u,ny*nx*sizeof(float));
-   cudaMallocManaged(&v,ny*nx*sizeof(float));
-
+   cuda_Error_t err1=cudaMallocManaged(&u,ny*nx*sizeof(float));
+   cuda_Error_t err2=cudaMallocManaged(&v,ny*nx*sizeof(float));
+   std::cout<<err1<<" "<<err2<<std::endl;
    for(int i=0; i<ny*nx; i++) {
       u[i]=0.0;
       v[i]=0.0;
    }
 
    while(udiff>.001){
-      for(int i=0; i<nx; i++){
+      /*for(int i=0; i<nx; i++){
          for(int j=0; j<ny; j++){
             un[j*nx+i] = u[j*nx+i];
             vn[j*nx+i] = v[j*nx+i];
          }    
-      }
+      }*/
       
       build_up_b<<<ny,nx>>>(b,rho,dt,dx,dy,u,v);
       //b = build_up_b(rho, dt, dx, dy, u, v);
