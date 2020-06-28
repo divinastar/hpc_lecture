@@ -89,7 +89,7 @@ __global__ void updated_u_v(float *u, float *v){ //float *un, float *vn, float *
    int bId = blockIdx.x;
    int tId = threadIdx.x;
    printf("Hello GPUhahah\n");
-   if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
+   /*if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
       printf("Hello GPU\n");
       u[m] = 1;/*(un[m] -
          un[m] * dt/dx *
@@ -102,7 +102,7 @@ __global__ void updated_u_v(float *u, float *v){ //float *un, float *vn, float *
         (un[m+1] - 2*un[m] + un[m-1]) +
          dt/pow(dy,2) *
         (un[m+nx] - 2*un[m] + un[m-nx])) +
-         F* dt);*/ 
+         F* dt);
 
       v[m] = (vn[m] -
             un[m] * dt/dx *
@@ -175,7 +175,7 @@ __global__ void updated_u_v(float *u, float *v){ //float *un, float *vn, float *
       //Wall BC: u,v = 0 @ y = 0,2
       u[m] = 0;
       v[m] = 0;
-   }
+   }*/
 
 }
 
