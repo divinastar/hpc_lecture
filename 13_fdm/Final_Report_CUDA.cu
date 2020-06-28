@@ -217,9 +217,9 @@ int main() {
          //X[i][j] = x[i];
          //Y[i][j] = y[j];   
          //u.push_back(0);
-         un.push_back(0);
+         //un.push_back(0);
          //v.push_back(0);
-         vn.push_back(0);
+         //vn.push_back(0);
          //p.push_back(1);
          pn.push_back(1);
          //b.push_back(0);
