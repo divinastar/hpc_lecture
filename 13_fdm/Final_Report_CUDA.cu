@@ -195,9 +195,9 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   //std::vector<float> u;
+   std::vector<float> u;
    std::vector<float> un;
-   //std::vector<float> v;
+   std::vector<float> v;
    std::vector<float> vn;
    std::vector<float> pn;
    //float *u;
