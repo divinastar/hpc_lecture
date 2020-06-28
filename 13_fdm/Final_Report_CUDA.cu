@@ -90,7 +90,7 @@ __global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, 
    int tId = threadIdx.x;
 
    if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
-      u[m] = (un[m] -
+      u[m] = 1;/*(un[m] -
          un[m] * dt/dx *
         (un[m] - un[m-1]) -
          vn[m] * dt/dy *
@@ -101,7 +101,7 @@ __global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, 
         (un[m+1] - 2*un[m] + un[m-1]) +
          dt/pow(dy,2) *
         (un[m+nx] - 2*un[m] + un[m-nx])) +
-         F* dt); 
+         F* dt);*/ 
 
       v[m] = (vn[m] -
             un[m] * dt/dx *
