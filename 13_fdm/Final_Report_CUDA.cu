@@ -237,8 +237,8 @@ int main() {
 
    cudaMallocManaged(&b,ny*nx*sizeof(float));
    cudaMallocManaged(&p,ny*nx*sizeof(float));
-   cuda_Error_t err1=cudaMallocManaged(&u,ny*nx*sizeof(float));
-   cuda_Error_t err2=cudaMallocManaged(&v,ny*nx*sizeof(float));
+   cudaError_t err1=cudaMallocManaged(&u,ny*nx*sizeof(float));
+   cudaError_t err2=cudaMallocManaged(&v,ny*nx*sizeof(float));
    std::cout<<err1<<" "<<err2<<std::endl;
    for(int i=0; i<ny*nx; i++) {
       u[i]=0.0;
