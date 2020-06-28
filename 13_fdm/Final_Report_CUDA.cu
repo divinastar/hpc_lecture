@@ -195,9 +195,9 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   std::vector<float> u;
+   //std::vector<float> u;
    std::vector<float> un;
-   std::vector<float> v;
+   //std::vector<float> v;
    std::vector<float> vn;
    std::vector<float> pn;
    //float *u;
@@ -231,18 +231,18 @@ int main() {
    float sumun = 0.0;
    float *b;
    float *p;
-   /*float *u;
+   float *u;
    float *v;
-   
+
+   cudaMallocManaged(&b,ny*nx*sizeof(float));
+   cudaMallocManaged(&p,ny*nx*sizeof(float));
+   cudaMallocManaged(&u,ny*nx*sizeof(float));
+   cudaMallocManaged(&v,ny*nx*sizeof(float));
+
    for(int i=0; i<ny*nx; i++) {
       u[i]=0.0;
       v[i]=0.0;
-   }*/
-
-   cudaMallocManaged(&b,dy*dx*sizeof(float));
-   cudaMallocManaged(&p,dy*dx*sizeof(float));
-   cudaMallocManaged(&u,dy*dx*sizeof(float));
-   cudaMallocManaged(&v,dy*dx*sizeof(float));
+   }
 
    while(udiff>.001){
       for(int i=0; i<nx; i++){
@@ -252,11 +252,11 @@ int main() {
          }    
       }
       
-      build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u.data(),v.data());
+      build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u,v);
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<dy,dx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      updated_u_v<<<dy,dx>>>(u.data(),v.data(),un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       
       sumu = 0.0;
       sumun = 0.0;
