@@ -299,6 +299,6 @@ int main() {
    }
    cudaDeviceSynchronize();
    std::cout<< stepcount <<std::endl;
-   cudaFree(b);
+   //cudaFree(b);
 
 }
