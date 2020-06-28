@@ -252,11 +252,11 @@ int main() {
          }    
       }
       
-      build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u,v);
+      build_up_b<<<ny,nx>>>(b,rho,dt,dx,dy,u,v);
       //b = build_up_b(rho, dt, dx, dy, u, v);
-      pressure_poisson_periodic<<<dy,dx>>>(p,pn.data(),b, dx, dy);
+      pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       
       sumu = 0.0;
       sumun = 0.0;
