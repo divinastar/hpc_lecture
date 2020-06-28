@@ -88,8 +88,9 @@ __global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, 
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
    int tId = threadIdx.x;
-
+   printf("Hello GPUhahah\n");
    if(bId != 0 && bId != (ny-1) && tId != 0 && tId != (nx-1)){
+      printf("Hello GPU\n");
       u[m] = 1;/*(un[m] -
          un[m] * dt/dx *
         (un[m] - un[m-1]) -
@@ -256,9 +257,9 @@ int main() {
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      cudaError_t error=updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       cudaDeviceSynchronize();
-      std::cout<<error<<std::endl;
+
       for(int i=0;i<nx;i++){
          for(int j=0; j<ny;j++){
             std::cout<<"u "<<u[j*nx+i]<<std::endl;
