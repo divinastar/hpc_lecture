@@ -265,6 +265,7 @@ int main() {
       updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
 
       for(int i=0;i<nx;i++){
          for(int j=0; j<ny;j++){
