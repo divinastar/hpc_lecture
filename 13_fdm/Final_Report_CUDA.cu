@@ -83,7 +83,7 @@ __global__ void pressure_poisson_periodic(float *p, float *pn, float *b, float d
    }
 }
 
-__global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, float dx, float dy, float dt, float rho, float nu, float F){
+__global__ void updated_u_v(float *u, float *v){ //float *un, float *vn, float *p, float dx, float dy, float dt, float rho, float nu, float F){
    //m = j * nx + i
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
@@ -246,18 +246,18 @@ int main() {
    }
 
    while(udiff>.001){
-      /*for(int i=0; i<nx; i++){
+      for(int i=0; i<nx; i++){
          for(int j=0; j<ny; j++){
             un[j*nx+i] = u[j*nx+i];
             vn[j*nx+i] = v[j*nx+i];
          }    
-      }*/
+      }
       
       build_up_b<<<ny,nx>>>(b,rho,dt,dx,dy,u,v);
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
-      updated_u_v<<<ny,nx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
+      updated_u_v<<<ny,nx>>>(u,v);//,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       cudaDeviceSynchronize();
 
       for(int i=0;i<nx;i++){
