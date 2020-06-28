@@ -157,7 +157,7 @@ int main() {
       build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u.data(),v.data());
       //b = build_up_b(rho, dt, dx, dy, u, v);
       cudaMallocManaged(&p,dy*dx*sizeof(float));
-      pressure_poisson_periodic<<dy,dx>>(p,pn.data(), dx, dy);
+      pressure_poisson_periodic<<<dy,dx>>>(p,pn.data(),b, dx, dy);
       //p = pressure_poisson_periodic(p, b, dx, dy);
       
       /*for(int i=0; i<nx; i++){
