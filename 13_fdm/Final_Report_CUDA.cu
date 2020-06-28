@@ -239,9 +239,6 @@ int main() {
       v[i]=0;
    }
 
-   std::cout<<u.size()<<std::endl;
-   std::cout<<un.size()<<std::endl;
-   
    while(udiff>.001){
       for(int i=0; i<nx; i++){
          for(int j=0; j<ny; j++){
