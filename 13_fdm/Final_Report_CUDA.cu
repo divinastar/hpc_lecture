@@ -11,13 +11,6 @@ const int ny = 5;
 const int nit = 50;
 //const int c = 1;
 
-/*__device__ __managed__ std::vector<float> b;
-__device__ __managed__ std::vector<float> p;
-__device__ __managed__ std::vector<float> u;
-__device__ __managed__ std::vector<float> un;
-__device__ __managed__ std::vector<float> v;
-__device__ __managed__ std::vector<float> vn;*/
-
 __global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, float *u , float *v){
    //m = j * nx + i
    int m = blockIdx.x * blockDim.x + threadIdx.x;
@@ -172,7 +165,7 @@ int main() {
       build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u.data(),v.data());
       
       //b = build_up_b(rho, dt, dx, dy, u, v);
-      //p = pressure_poisson_periodic(p, b, dx, dy);
+      p = pressure_poisson_periodic(p, b, dx, dy);
       
       /*for(int i=0; i<nx; i++){
          for(int j=0; j<nx; j++){
