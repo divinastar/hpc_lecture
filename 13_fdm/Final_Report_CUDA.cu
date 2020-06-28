@@ -174,7 +174,6 @@ __global__ void updated_u_v(float *u, float *v, float *un, float *vn, float *p, 
       //Wall BC: u,v = 0 @ y = 0,2
       u[m] = 0;
       v[m] = 0;
-
    }
 
 }
@@ -196,9 +195,9 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
-   std::vector<float> u;
+   //std::vector<float> u;
    std::vector<float> un;
-   std::vector<float> v;
+   //std::vector<float> v;
    std::vector<float> vn;
    std::vector<float> pn;
    //float *u;
@@ -236,7 +235,7 @@ int main() {
    float *u;
    float *v;
    
-   for(int i; i<ny*nx; i++) {
+   for(int i=0; i<ny*nx; i++) {
       u[i]=0;
       v[i]=0;
    }
@@ -250,7 +249,7 @@ int main() {
       }
       
       cudaMallocManaged(&b,dy*dx*sizeof(float));
-      build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u.data(),v.data());
+      build_up_b<<<dy,dx>>>(b,rho,dt,dx,dy,u,v);
       //b = build_up_b(rho, dt, dx, dy, u, v);
       cudaMallocManaged(&p,dy*dx*sizeof(float));
       pressure_poisson_periodic<<<dy,dx>>>(p,pn.data(),b, dx, dy);
@@ -258,7 +257,7 @@ int main() {
       cudaMallocManaged(&u,dy*dx*sizeof(float));
       cudaMallocManaged(&v,dy*dx*sizeof(float));
 
-      updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),dx,dy,dt,rho,nu,F);
+      updated_u_v<<<dy,dx>>>(u,v,un.data(),vn.data(),p,dx,dy,dt,rho,nu,F);
       
       sumu = 0.0;
       sumun = 0.0;
