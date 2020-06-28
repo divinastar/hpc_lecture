@@ -18,7 +18,7 @@ __device__ __managed__ std::vector<float> un;
 __device__ __managed__ std::vector<float> v;
 __device__ __managed__ std::vector<float> vn;*/
 
-__global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, std::vector<float> u , std::vector<float> v){
+__global__ void build_up_b(float *b, int rho, float dt, float dx, float dy, float *u , float *v){
    //m = j * nx + i
    int m = blockIdx.x * blockDim.x + threadIdx.x;
    int bId = blockIdx.x;
