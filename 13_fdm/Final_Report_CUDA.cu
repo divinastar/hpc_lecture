@@ -190,6 +190,11 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
+   float udiff = 1.0;
+   int stepcount = 0;
+   float sumu = 0.0;
+   float sumun = 0.0;
+
    float *b;
    float *p;
    float *u;
@@ -197,11 +202,6 @@ int main() {
    float *un;
    float *vn;
    float *pn;
-
-   float udiff = 1.0;
-   int stepcount = 0;
-   float sumu = 0.0;
-   float sumun = 0.0;
 
    cudaMallocManaged(&b,ny*nx*sizeof(float));
    cudaMallocManaged(&p,ny*nx*sizeof(float));
