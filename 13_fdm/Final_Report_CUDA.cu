@@ -5,8 +5,8 @@
 #include <cstdlib>
 using namespace std;
 
-const int nx = 41;
-const int ny = 41;
+const int nx = 5;
+const int ny = 5;
 //const int nt = 10;
 const int nit = 50;
 //const int c = 1;
@@ -228,19 +228,15 @@ int main() {
       }
       
       build_up_b<<<ny,nx>>>(b,rho,dt,dx,dy,u,v);
-      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
       
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn,b, dx, dy);
-      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
       
       //p = pressure_poisson_periodic(p, b, dx, dy);
       updated_u_v<<<ny,nx>>>(u,v,un,vn,p,dx,dy,dt,rho,nu,F);
-      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
-      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
 
       sumu = 0.0;
       sumun = 0.0;
