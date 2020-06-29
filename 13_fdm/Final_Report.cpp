@@ -3,6 +3,7 @@
 #include <iostream>
 #include <array>
 #include <cmath>
+#include <chrono>
 using namespace std;
 
 const int nx = 41;
@@ -141,6 +142,8 @@ int main() {
    int stepcount = 0;
    float sumu = 0.0;
    float sumun = 0.0;
+
+   auto tic = chrono::steady_clock::now();
    
    while(udiff>.001){
       for(int i=0; i<nx; i++){
@@ -269,7 +272,10 @@ int main() {
       stepcount += 1;  
        
    }
+   auto toc = chrono::steady_clock::now();
+   double time = chrono::duration<double>(toc - tic).count();
    std::cout<<"Step: "<<stepcount<<": udiff = "<<udiff<<std::endl;
-   std::cout<< stepcount <<std::endl;
+   std::cout<<"Step Count = " << stepcount <<std::endl;
+   std::cout<<"Time = " << time <<std::endl;
 
 }

@@ -219,6 +219,8 @@ int main() {
       pn[i]=1.0;
    }
 
+   auto tic = chrono::steady_clock::now();
+
    while(udiff>.001){
       for(int i=0; i<nx; i++){
          for(int j=0; j<ny; j++){
@@ -251,10 +253,12 @@ int main() {
       if(stepcount % 50 ==0){
          std::cout<<"Step: "<<stepcount<<": udiff = "<<udiff<<std::endl;
       }
-      stepcount += 1;  
-       
+      stepcount += 1;      
    }
+   auto toc = chrono::steady_clock::now();
+   double time = chrono::duration<double>(toc - tic).count();
    std::cout<<"Step: "<<stepcount<<": udiff = "<<udiff<<std::endl;
-   std::cout<< stepcount <<std::endl;
+   std::cout<<"Step Count = " << stepcount <<std::endl;
+   std::cout<<"Time = " << time <<std::endl;
 
 }
