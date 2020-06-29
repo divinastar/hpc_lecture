@@ -229,12 +229,15 @@ int main() {
       
       build_up_b<<<ny,nx>>>(b,rho,dt,dx,dy,u,v);
       cudaDeviceSynchronize();
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn,b, dx, dy);
       cudaDeviceSynchronize();
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //p = pressure_poisson_periodic(p, b, dx, dy);
       updated_u_v<<<ny,nx>>>(u,v,un,vn,p,dx,dy,dt,rho,nu,F);
       cudaDeviceSynchronize();
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
 
       sumu = 0.0;
       sumun = 0.0;
