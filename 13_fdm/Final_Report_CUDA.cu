@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include <chrono>
 using namespace std;
 
 const int nx = 41;
