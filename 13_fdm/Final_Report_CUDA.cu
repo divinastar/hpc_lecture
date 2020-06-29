@@ -5,8 +5,8 @@
 #include <cstdlib>
 using namespace std;
 
-const int nx = 5;
-const int ny = 5;
+const int nx = 41;
+const int ny = 41;
 //const int nt = 10;
 const int nit = 50;
 //const int c = 1;
@@ -181,6 +181,10 @@ int main() {
    //Variable Declarations
    float dx = 2/(nx - 1.0);
    float dy = 2/(ny - 1.0);
+   //std::vector<float> x;
+   //std::vector<float> y;
+   //std::vector<std::vector<float> > X;
+   //std::vector<std::vector<float> > Y;
    int m;
    
    //Physical Variables
@@ -190,11 +194,40 @@ int main() {
    const float dt = .01;
    
    //Initial Conditions
+   //std::vector<float> u;
+   //std::vector<float> un;
+   //std::vector<float> v;
+   //std::vector<float> vn;
+   //std::vector<float> pn;
+   //float *u;
+   //float *v;
+   /*
+   for(int i=0;i<nx;i++){
+      x.push_back((2-0)*i/(nx-1));
+   }
+   
+   for(int i=0;i<ny;i++){
+      y.push_back((2-0)*i/(ny-1));
+   }*/
+   
+  /*for(int i=0;i<nx;i++){
+      for(int j=0;j<ny;j++){
+         //X[i][j] = x[i];
+         //Y[i][j] = y[j];   
+         //u.push_back(0);
+         //un.push_back(0);
+         //v.push_back(0);
+         //vn.push_back(0);
+         //p.push_back(1);
+         pn.push_back(1);
+         //b.push_back(0);
+      }
+   }*/
+
    float udiff = 1.0;
    int stepcount = 0;
    float sumu = 0.0;
    float sumun = 0.0;
-
    float *b;
    float *p;
    float *u;
@@ -205,12 +238,12 @@ int main() {
 
    cudaMallocManaged(&b,ny*nx*sizeof(float));
    cudaMallocManaged(&p,ny*nx*sizeof(float));
-   cudaMallocManaged(&u,ny*nx*sizeof(float));
-   cudaMallocManaged(&v,ny*nx*sizeof(float));
+   cudaError_t err1=cudaMallocManaged(&u,ny*nx*sizeof(float));
+   cudaError_t err2=cudaMallocManaged(&v,ny*nx*sizeof(float));
    cudaMallocManaged(&un,ny*nx*sizeof(float));
    cudaMallocManaged(&vn,ny*nx*sizeof(float));
    cudaMallocManaged(&pn,ny*nx*sizeof(float));
-
+   std::cout<<err1<<" "<<err2<<std::endl;
    for(int i=0; i<ny*nx; i++) {
       u[i]=0.0;
       v[i]=0.0;
@@ -228,15 +261,25 @@ int main() {
       }
       
       build_up_b<<<ny,nx>>>(b,rho,dt,dx,dy,u,v);
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
-      
       //b = build_up_b(rho, dt, dx, dy, u, v);
       pressure_poisson_periodic<<<ny,nx>>>(p,pn,b, dx, dy);
       cudaDeviceSynchronize();
-      
+      //cudaFree(b);
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       //p = pressure_poisson_periodic(p, b, dx, dy);
       updated_u_v<<<ny,nx>>>(u,v,un,vn,p,dx,dy,dt,rho,nu,F);
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
       cudaDeviceSynchronize();
+      std::cout<<cudaGetErrorString(cudaGetLastError())<<std::endl;
+
+      for(int i=0;i<nx;i++){
+         for(int j=0; j<ny;j++){
+            std::cout<<"u "<<u[j*nx+i]<<std::endl;
+            std::cout<<"un "<<un[j*nx+i]<<std::endl;
+         }
+      }
 
       sumu = 0.0;
       sumun = 0.0;
@@ -245,6 +288,7 @@ int main() {
             m = j*nx+i;
             sumu += u[m];
             sumun += un[m];
+            
          }
       }
       udiff = (sumu - sumun)/ sumu ;
@@ -252,6 +296,8 @@ int main() {
       stepcount += 1;  
        
    }
+   
    std::cout<< stepcount <<std::endl;
+   //cudaFree(b);
 
 }
