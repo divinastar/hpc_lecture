@@ -269,7 +269,7 @@ int main() {
       stepcount += 1;  
        
    }
-
+   std::cout<<"Step: "<<stepcount<<": udiff = "<<udiff<<std::endl;
    std::cout<< stepcount <<std::endl;
 
 }

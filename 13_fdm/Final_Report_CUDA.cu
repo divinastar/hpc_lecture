@@ -248,10 +248,13 @@ int main() {
          }
       }
       udiff = (sumu - sumun)/ sumu ;
-      std::cout<<"udiff "<<udiff<<std::endl;
+      if(stepcount % 50 ==0){
+         std::cout<<"Step: "<<stepcount<<": udiff = "<<udiff<<std::endl;
+      }
       stepcount += 1;  
        
    }
+   std::cout<<"Step: "<<stepcount<<": udiff = "<<udiff<<std::endl;
    std::cout<< stepcount <<std::endl;
 
 }
