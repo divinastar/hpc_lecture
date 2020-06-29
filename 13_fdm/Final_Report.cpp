@@ -108,10 +108,6 @@ int main() {
    //Variable Declarations
    float dx = 2/(nx - 1.0);
    float dy = 2/(ny - 1.0);
-   //std::vector<float> x;
-   //std::vector<float> y;
-   //std::vector<std::vector<float> > X;
-   //std::vector<std::vector<float> > Y;
    int m;
    
    //Physical Variables
@@ -128,19 +124,9 @@ int main() {
    std::vector<float> p;
    std::vector<float> pn;
    std::vector<float> b;
-   /*
-   for(int i=0;i<nx;i++){
-      x.push_back((2-0)*i/(nx-1));
-   }
-   
-   for(int i=0;i<ny;i++){
-      y.push_back((2-0)*i/(ny-1));
-   }*/
-   
+
   for(int i=0;i<nx;i++){
-      for(int j=0;j<ny;j++){
-         //X[i][j] = x[i];
-         //Y[i][j] = y[j];   
+      for(int j=0;j<ny;j++){ 
          u.push_back(0);
          un.push_back(0);
          v.push_back(0);
@@ -150,8 +136,7 @@ int main() {
          b.push_back(0);
       }
    }
-   std::cout<<u.size()<<std::endl;
-   std::cout<<un.size()<<std::endl;
+
    float udiff = 1.0;
    int stepcount = 0;
    float sumu = 0.0;
@@ -162,23 +147,11 @@ int main() {
          for(int j=0; j<ny; j++){
             un[j*nx+i] = u[j*nx+i];
             vn[j*nx+i] = v[j*nx+i];
-            //std::cout<<"un "<<un[j*nx+i]<<std::endl;
-            //std::cout<<"vn "<<vn[j*nx+i]<<std::endl;
          }    
       }
       
-      
       b = build_up_b(rho, dt, dx, dy, u, v);
       p = pressure_poisson_periodic(p, b, dx, dy);
-      
-      /*for(int i=0; i<nx; i++){
-         for(int j=0; j<nx; j++){
-            std::cout<<"b "<<b[j*nx+i]<<std::endl;
-            std::cout<<"p "<<p[j*nx+i]<<std::endl;
-         }
-      }*/
-      
-      
       
       for(int i=1;i<nx-1;i++){
          for(int j=1;j<ny-1;j++){
@@ -272,7 +245,6 @@ int main() {
       }
       
       //Wall BC: u,v = 0 @ y = 0,2
-      
       for(int i=0; i<nx; i++){
          u[i] = 0;
          u[nx*(ny-1)+i] = 0;
@@ -285,7 +257,6 @@ int main() {
       for(int i=0;i<nx;i++){
          for(int j=0; j<ny;j++){
             m = j*nx+i;
-
             sumu += u[m];
             sumun += un[m];
             
@@ -293,8 +264,6 @@ int main() {
       }
       udiff = (sumu - sumun)/ sumu ;
       std::cout<<"udiff "<<udiff<<std::endl;
-      std::cout<<"sumu "<<sumu<<std::endl;
-
       stepcount += 1;  
        
    }
