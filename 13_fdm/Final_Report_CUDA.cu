@@ -5,8 +5,8 @@
 #include <cstdlib>
 using namespace std;
 
-const int nx = 5;
-const int ny = 5;
+const int nx = 41;
+const int ny = 41;
 //const int nt = 10;
 const int nit = 50;
 //const int c = 1;
